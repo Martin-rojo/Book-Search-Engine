@@ -25,9 +25,9 @@ const server = new ApolloServer({
 });
 
 // if we're in production, serve client/build as static assets
-if (process.env.NODE_ENV === 'production') {
+
   app.use(express.static(path.join(__dirname, '../../client/dist')));
-}
+
 
 // Use the REST API routes alongside GraphQL (optional - you can remove this if you want to fully migrate to GraphQL)
 app.use(routes);
