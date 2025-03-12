@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { ExpressContextFunctionArgument } from 'apollo-server-express';
 
 import dotenv from 'dotenv';
+import { ExpressContextFunctionArgument } from '@apollo/server/express4';
 dotenv.config();
 
 interface JwtPayload {
