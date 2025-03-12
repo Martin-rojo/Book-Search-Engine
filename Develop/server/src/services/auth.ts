@@ -11,7 +11,6 @@ interface JwtPayload {
   email: string,
 }
 
-// Keep the existing middleware for RESTful routes (if needed)
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
@@ -33,32 +32,30 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// Add new context function for Apollo Server
+// Add this new function for GraphQL context
 export const authMiddleware = ({ req }: ExpressContextFunctionArgument) => {
-  // Get the auth header value
-  const authHeader = req.headers.authorization;
-  
-  // If no token, return empty context
-  if (!authHeader) {
-    return {};
+  // Get the token from the headers
+  let token = req.headers.authorization || '';
+
+  // Format is "Bearer <token>", so remove "Bearer " to get just the token
+  if (token.startsWith('Bearer ')) {
+    token = token.slice(7, token.length).trim();
   }
-  
-  // Extract the token (format: "Bearer <token>")
-  const token = authHeader.split(' ')[1];
-  
+
+  // If no token, return an empty context object
   if (!token) {
     return {};
   }
-  
+
   try {
-    // Verify token
+    // Verify the token
     const secretKey = process.env.JWT_SECRET_KEY || '';
     const user = jwt.verify(token, secretKey) as JwtPayload;
     
-    // Add user data to context
+    // Add the user data to the context
     return { user };
   } catch {
-    // Invalid token
+    // If token verification fails, return an empty context object
     return {};
   }
 };
